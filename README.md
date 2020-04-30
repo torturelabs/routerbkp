@@ -20,7 +20,7 @@
 
 - Add keys and configuration to git repo `git add && git commit -m "Configure"`
 
-- Run `./addruser.sh` to add `routerbkp` and its ssh key to all routers. Use
+- Run `./add_ruser.sh` to add `routerbkp` and its ssh key to all routers. Use
     `ADMIN` environment variable to specify different administrator account
     (by default used `admin`).
 
