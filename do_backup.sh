@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 
 set -x
+set -e
 
-SCRIPT=$(readlink -f $0)
-MYPATH=$(dirname $SCRIPT)
+source .env
 
-USER="routerbkp"
+# Return the canonicalized path (works on OS-X like 'readlink -f' on Linux); . is $PWD
+function realpath {
+    [ "." = "${1}" ] && n=${PWD} || n=${1}; while nn=$( readlink -n "$n" ); do n=$nn; done; echo "$n"
+}
+
 COMPACT=$(/bin/date +%Y%m%d_%H%M)
-RFILE="${MYPATH}/routers.txt"
-CONFDIR="${MYPATH}/configs"
 SSHKEY="${MYPATH}/.ssh/id_rsa"
 
 cd ${CONFDIR}
@@ -18,12 +20,12 @@ while read -r line; do
   ROUTER=$line
   echo Processing ${ROUTER}
 
-  /usr/bin/ssh -n -i ${SSHKEY} -oStrictHostKeyChecking=no -oConnectTimeout=10 $USER@$ROUTER "/export file=export_${COMPACT}" &&
-    /usr/bin/scp -i ${SSHKEY} -q $USER@$ROUTER:/export_${COMPACT}.rsc ${CONFDIR}/${ROUTER} &&
-    /usr/bin/ssh -n -i ${SSHKEY} $USER@$ROUTER "/file remove export_${COMPACT}.rsc" &&
+  /usr/bin/ssh -n -i ${SSHKEY} -oStrictHostKeyChecking=no -oConnectTimeout=10 $USERONROUTER@$ROUTER "/export file=export_${COMPACT}" &&
+    /usr/bin/scp -i ${SSHKEY} -q $USERONROUTER@$ROUTER:/export_${COMPACT}.rsc ${CONFDIR}/${ROUTER} &&
+    /usr/bin/ssh -n -i ${SSHKEY} $USERONROUTER@$ROUTER "/file remove export_${COMPACT}.rsc" &&
     sed -i -e "1d" ${CONFDIR}/${ROUTER}
 
-done <"${RFILE}"
+done <"${ROUTERS}"
 
 git add ${CONFDIR}
 git commit -m "Autocommit"

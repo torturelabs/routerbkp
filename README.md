@@ -15,11 +15,14 @@
     .ssh/id_rsa > .ssh/id_rsa.sops` and then delete original key `rm .ssh/id_rsa`
 
 - Add your routers line-by-line to `routers.txt` list. I prefer to use DNS names
-    rather IP addresses in form `router-N.location.mydomain.com`.
+    rather IP addresses in form `router-N.location.mydomain.com`. Add `:<portnum>` if
+    you have custom SSH ports for specific router.
 
 - Add keys and configuration to git repo `git add && git commit -m "Configure"`
 
-- Run `./addruser.sh` to add `routerbkp` and its ssh key to all routers
+- Run `./addruser.sh` to add `routerbkp` and its ssh key to all routers. Use
+    `ADMIN` environment variable to specify different administrator account
+    (by default used `admin`).
 
 - Run `./do_backup.sh` to make sure that everything will work automatically.
     Check `git log` to see commits with full routers configuration.
