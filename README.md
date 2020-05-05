@@ -8,7 +8,15 @@
 - Clone your forked repo to NOC host (or any machine inside your network which
     can act like a network operational center).
 
-- Generate new ssh key for special backup user which will deal with saving
+- Generate and setup on GitHub local deployment key for synchronizing changes on
+    local host and setup email and name for git commiter like:
+
+```sh
+git config --global user.email "routerbkp@localdomain.com"
+git config --global user.name "routerbkp"
+```
+
+- Generate new (second) ssh key for special backup user which will deal with saving
     backups: `ssh-keygen -f .ssh/id_rsa -q -N ""`
 
 - Optional: encrypt it using [SOPS](https://github.com/mozilla/sops): `sops -e
